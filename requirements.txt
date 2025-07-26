@@ -1,0 +1,17 @@
+opencv-python
+numpy
+scikit-image
+pandas
+matplotlib
+scikit-learn
+deep-sort-realtime
+scipy
+ultralytics
+filterpy
+facenet_pytorch
+fastapi
+uvicorn
+pydantic
+fastapi-utils
+starlette
+torchreid
