@@ -1,0 +1,32 @@
+# ================================
+# 🚀 Device Configuration
+# ================================
+device: "cuda"  # "cuda" nếu có GPU, "cpu" nếu không
+
+# ================================
+# 🏷️ Training Hyperparameters
+# ================================
+batch_size: 32
+num_epochs: 10
+learning_rate: 0.0001
+weight_decay: 0.0005
+momentum: 0.9
+
+# ================================
+# 📂 Dataset Paths
+# ================================
+dataset_path: "datasets/archive/Market-1501-v15.09.15/bounding_box_train"
+checkpoint_dir: "./checkpoints"
+log_dir: "./logs"
+
+# ================================
+# 🎯 Model Parameters
+# ================================
+input_size: [224, 224]  # Chiều cao, chiều rộng
+backbone: "resnet50"    # Các lựa chọn: resnet50 / facenet / efficientnet
+pretrained: true
+
+# ================================
+# 🌱 Reproducibility
+# ================================
+seed: 42
