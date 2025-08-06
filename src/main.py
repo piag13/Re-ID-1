@@ -21,7 +21,7 @@ transform = transforms.Compose([
 ])
 
 resnet_model = models.resnet50(pretrained=True)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = config["device"]
 resnet_model.to(device)
 resnet_model.fc = torch.nn.Identity()
 cal = Embedding(transform, device)
@@ -32,14 +32,7 @@ facenet_model = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 print("Models loaded: ResNet for body, FaceNet for face.")
 
 # Set up video capture
-output_url = "\output_video"
-# url = "rtsp://admin:Tinvl12345@@192.168.1.13:554/media/live/1/main"
-url = 0
-# url = "rtsp://admin:Tinvl12345@@192.168.0.149:554/media/live/1/main"
-# url = "rtsp://admin:Tinvl1903@@192.168.0.103:554/media/live/1/main"
-# url = "rtsp://admin:Tinvl1903@@169.254.17.253:554/media/live/1/main"
-# url = r"D:\Dissertation\Re-id\sample video\footage_2.mp4"  # Use video file path or 0 for webcam
-cap = cv2.VideoCapture(url)  # Use video file path or 0 for webcam
+cap = cv2.VideoCapture(config["url"])  # Use video file path or 0 for webcam
 gallery = PersonGallery(threshold=0.771, iou_threshold=0.512)
 tracklet_manager = TrackletManager(max_age=30, threshold=0.751, iou_threshold=0.512)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -50,7 +43,7 @@ height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Set up video writer for output video
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out = cv2.VideoWriter(output_url + "\output_reid_4.mp4", fourcc, fps, (1280, 720))
+out = cv2.VideoWriter(config["output_url"]+ "\output_reid_4.mp4", fourcc, fps, (1280, 720))
 
 print(device)
 

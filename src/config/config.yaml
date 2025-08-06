@@ -30,3 +30,12 @@ pretrained: true
 # 🌱 Reproducibility
 # ================================
 seed: 42
+
+
+output_url: "/output_video"
+# url = "rtsp://admin:Tinvl12345@@192.168.1.13:554/media/live/1/main"
+url: 0
+# url = "rtsp://admin:Tinvl12345@@192.168.0.149:554/media/live/1/main"
+# url = "rtsp://admin:Tinvl1903@@192.168.0.103:554/media/live/1/main"
+# url = "rtsp://admin:Tinvl1903@@169.254.17.253:554/media/live/1/main"
+# url = r"D:\Dissertation\Re-id\sample video\footage_2.mp4"  # Use video file path or 0 for webcam
