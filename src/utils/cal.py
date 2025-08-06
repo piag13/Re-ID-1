@@ -1,8 +1,6 @@
 from scipy.spatial.distance import cosine
 import logging
 import torch
-import torch.nn.functional as F
-import torch.nn as nn
 import cv2
 import numpy as np
 from PIL import Image
@@ -220,7 +218,7 @@ class TrackletManager:
     def get_active_tracks(self):
         return [(t.track_id, t.bbox) for t in self.tracklets if t.matched_in_frame]
 
-class Cal:
+class Embedding:
     def __init__(self, transform, device=None):
         self.transform = transform
         self.device = device if device else ("cuda" if torch.cuda.is_available() else "cpu")
@@ -294,18 +292,3 @@ class Cal:
         # Concatenate body and face embeddings
         combined_embedding = np.concatenate((body_feat_np, face_feat_np))
         return combined_embedding
-    
-class ContrastiveLoss(nn.Module):
-    def __init__(self, margin=1.0):
-        super(ContrastiveLoss, self).__init__()
-        self.margin = margin
-
-    def forward(self, output1, output2, label):
-        # Calculate Euclidean distance between embeddings
-        euclidean_distance = F.pairwise_distance(output1, output2)
-
-        # Contrastive loss
-        loss = label * torch.pow(euclidean_distance, 2) + \
-               (1 - label) * torch.pow(torch.clamp(self.margin - euclidean_distance, min=0.0), 2)
-
-        return loss.mean()

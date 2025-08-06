@@ -1,15 +1,18 @@
 import cv2
 from ultralytics import YOLO
 import torch
-from utils.cal import PersonGallery, TrackletManager, Cal
+from utils.cal import PersonGallery, TrackletManager, Embedding
 from facenet_pytorch import InceptionResnetV1
 from torchvision import models, transforms
-import config
+import yaml
 
 yolo_model = YOLO("YOLO11\weights\yolo11m.pt")
 
+with open("Re-ID-1\src\config\config.yaml", "r") as f:
+    config = yaml.safe_load(f)
+
 transform = transforms.Compose([
-    transforms.Resize(config.INPUT_SIZE),
+    transforms.Resize(config["input_size"]),
     transforms.ToTensor(),
     transforms.Normalize(
         mean=[0.485, 0.456, 0.406],  # ImageNet mean
@@ -21,7 +24,7 @@ resnet_model = models.resnet50(pretrained=True)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 resnet_model.to(device)
 resnet_model.fc = torch.nn.Identity()
-cal = Cal(transform, device)
+cal = Embedding(transform, device)
 resnet_model.eval()
 print("ResNet50 model loaded and ready for inference.")
 # Load FaceNet for face embeddings
@@ -71,7 +74,7 @@ while cap.isOpened():
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
                 bbox = (x1, y1, x2, y2)
                 ## If detect small or partial detections, skip them
-                # Calculate bounding box dimensions
+                #calculate bounding box dimensions
                 bbox_height = y2 - y1
                 bbox_width = x2 - x1
                 bbox_area = bbox_height * bbox_width
