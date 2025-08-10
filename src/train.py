@@ -7,10 +7,21 @@ import torch.multiprocessing
 from dataset.dataset import Market1501Dataset
 import yaml
 import argparse
+import tqdm
+import os
 
 def load_config(config_path):
-    with open("Re-ID-1\src\config\config.yaml", "r") as f:
-        return yaml.safe_load(f)
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(f"Config file not found at {config_path}")
+    with open(config_path, "r") as f:
+        config = yaml.safe_load(f)
+    required_keys = ["dataset_path", "input_size"]
+    for key in required_keys:
+        if key not in config:
+            raise KeyError(f"Missing required config key: {key}")
+    if not isinstance(config["input_size"], (list, tuple)) or len(config["input_size"]) != 2:
+        raise ValueError("input_size in config must be a tuple or list of length 2")
+    return config
 
 def train(epochs, batch_size, learning_rate, device, margin, num_workers):
     train_dataset = Market1501Dataset(config["dataset_path"], transform=transform)
@@ -23,7 +34,6 @@ def train(epochs, batch_size, learning_rate, device, margin, num_workers):
     for epoch in range(epochs):
         model.train()
         total_loss = 0
-        import tqdm
         progress_bar = tqdm.tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}")
 
         for (img1, img2), labels in progress_bar:
@@ -62,13 +72,13 @@ if __name__ == "__main__":
     args.device = args.device if args.device is not None else config.get("device", "cuda" if torch.cuda.is_available() else "cpu")
 
     transform = transforms.Compose([
-    transforms.Resize(config["input_size"]),
-    transforms.ToTensor(),
-    transforms.Normalize(
-        mean=[0.485, 0.456, 0.406],  # ImageNet mean
-        std=[0.229, 0.224, 0.225]    # ImageNet std
-    ),
-])
+        transforms.Resize(config["input_size"]),
+        transforms.ToTensor(),
+        transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],  # ImageNet mean
+            std=[0.229, 0.224, 0.225]    # ImageNet std
+        ),
+    ])
 
     torch.multiprocessing.freeze_support()
-    train(args.epochs, args.batch_size, args.lr)
+    train(args.epochs, args.batch_size, args.lr, args.device, args.margin, args.num_workers)
