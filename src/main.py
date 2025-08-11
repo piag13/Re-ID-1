@@ -1,9 +1,9 @@
 import argparse
-from src.test import ReIDProcessor 
+from test import ReIDProcessor 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Re-Identification tracking on video")
-    parser.add_argument('--config', type=str, default="Re-ID-1/src/config/config.yaml", help='Path to configuration file')
+    parser.add_argument('--config', type=str, default="D:\Re_ID\src\config\config.yaml", help='Path to configuration file')
     parser.add_argument('--video', type=str, help='Input video file path or webcam index (e.g., 0)')
     parser.add_argument('--output', type=str, help='Output video file path')
     parser.add_argument('--yolo-weights', type=str, default="YOLO11/weights/yolo11m.pt", help='Path to YOLO model weights')
@@ -24,3 +24,5 @@ if __name__ == "__main__":
         device=args.device
     )
     processor.run()
+
+    
